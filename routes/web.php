@@ -73,8 +73,17 @@ Route::namespace('Web')->group(function () {
 
 //paystack
     // paystack?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('paystack', 'PaystackController@index');
+    Route::get('paystack', 'PaystackController@index')->name('paystack.index');
+    Route::post('paystack/initialize', 'PaystackController@initializePayment')->name('paystack.initialize');
     Route::get('paystack/payment/success', 'PaystackController@paystackCheckout')->name('paystack.success');
+
+//shop routes
+    Route::get('shop', 'ShopController@index')->name('shop.index');
+    Route::post('shop/cart/add', 'ShopController@addToCart')->name('shop.cart.add');
+    Route::post('shop/cart/update', 'ShopController@updateCart')->name('shop.cart.update');
+    Route::get('shop/cart/remove/{productId}', 'ShopController@removeFromCart')->name('shop.cart.remove');
+    Route::post('shop/cart/clear', 'ShopController@clearCart')->name('shop.cart.clear');
+    Route::get('shop/checkout', 'ShopController@checkout')->name('shop.checkout');
 //khalti
     Route::get('khalti', 'KhaltiController@index');
     Route::post('khalti/checkout', 'KhaltiController@khaltiCheckoutsuccess')->name('khalti.success');
