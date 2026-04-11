@@ -1,25 +1,30 @@
-```
+```gitignore
 # Compiled and build artifacts
 *.pyc
 __pycache__/
 *.o
 *.obj
-dist/
-build/
-target/
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
 # Dependencies
-node_modules/
 vendor/
+node_modules/
 composer.lock
-.env
-.env.local
-.env.*
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*
 
 # Editors
 .vscode/
@@ -27,17 +32,11 @@ composer.lock
 *.swp
 *.swo
 
-# OS generated files
-.DS_Store
-Thumbs.db
+# Database
+*.sql
+database/
 
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Cache directories
-.cache/
-.mypy_cache/
-.pytest_cache/
+# Uploads and media
+uploads/
+storage/
 ```
