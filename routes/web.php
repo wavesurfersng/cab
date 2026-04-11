@@ -1,146 +1,68 @@
 <?php
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\PdfGeneratorController;
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AdminController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
+// Home routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/track/{id}', [HomeController::class, 'track'])->name('track.show');
+Route::get('/video/{id}', [HomeController::class, 'video'])->name('video.show');
 
-/*
- * These routes use the root namespace 'App\Http\Controllers\Web'.
- */
-Route::namespace('Web')->group(function () {
+// Auth routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // All the folder based web routes
-    include_route_files('web');
-
-
-    Route::get('/', 'FrontPageController@index')->name('index');
-    Route::get('/driverpage', 'FrontPageController@driverp')->name('driverpage');
-    Route::get('/howdriving', 'FrontPageController@howdrive')->name('howdriving');
-    Route::get('/driverrequirements', 'FrontPageController@driverrequirement')->name('driverrequirements');
-    Route::get('/safety', 'FrontPageController@safetypage')->name('safety');
-    Route::get('/serviceareas', 'FrontPageController@serviceareaspage')->name('serviceareas');
-    Route::get('/compliance', 'FrontPageController@complaincepage')->name('complaince');
-    Route::get('/privacy', 'FrontPageController@privacypage')->name('privacy');
-    Route::get('/terms', 'FrontPageController@termspage')->name('terms');
-    Route::get('/dmv', 'FrontPageController@dmvpage')->name('dmv');
-    Route::get('/contactus', 'FrontPageController@contactuspage')->name('contactus');
-    Route::post('/contactussendmail','FrontPageController@contactussendmailadd')->name('contactussendmail');
-
-
-    Route::get('mercadopago-checkout',function(){
-        return view('mercadopago.checkout');
-    });
-
-    Route::get('sadad-checkout',function(){
-        return view('sadad.checkout');
-    });
-
-
-    Route::get('get-country-data','FrontPageController@country_code');
-    // Route::get('mercadopago-success','MercadopagoController@success');
-    Route::post('flutter-wave','MercadopagoController@flutterWaveSuceess');
-
-
-//payment
-    Route::get('payment','FrontPageController@payment');
-
-
-//paypall
-    // paypal?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('paypal', 'PayPalController@index')->name('paypal');
-    Route::post('paypal/payment', 'PayPalController@payment')->name('paypal.payment');
-    Route::get('paypal/payment/success', 'PayPalController@paymentSuccess')->name('paypal.payment.success');
-    Route::get('paypal/payment/cancel', 'PayPalController@paymentCancel')->name('paypal.payment/cancel');
-//stripe
-    // stripe?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('stripe', 'StripeController@stripe');
-    Route::post('stripe-checkout', 'StripeController@stripeCheckout')->name('checkout.process');
-    Route::get('stripe-checkout-success', 'StripeController@stripeCheckoutSuccess')->name('checkout.success');
-    Route::get('stripe-checkout-error', 'StripeController@stripeCheckoutError')->name('checkout.failure');
-//fluterwave
-    // flutterwave?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('flutterwave', 'FlutterwaveController@index');
-    Route::get('flutterwave/payment/success', 'FlutterwaveController@flutterwaveCheckout')->name('flutterwave.success');
-
-//paystack
-    // paystack?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('paystack', 'PaystackController@index')->name('paystack.index');
-    Route::post('paystack/initialize', 'PaystackController@initializePayment')->name('paystack.initialize');
-    Route::get('paystack/payment/success', 'PaystackController@paystackCheckout')->name('paystack.success');
-
-//shop routes
-    Route::get('shop', 'ShopController@index')->name('shop.index');
-    Route::post('shop/cart/add', 'ShopController@addToCart')->name('shop.cart.add');
-    Route::post('shop/cart/update', 'ShopController@updateCart')->name('shop.cart.update');
-    Route::get('shop/cart/remove/{productId}', 'ShopController@removeFromCart')->name('shop.cart.remove');
-    Route::post('shop/cart/clear', 'ShopController@clearCart')->name('shop.cart.clear');
-    Route::get('shop/checkout', 'ShopController@checkout')->name('shop.checkout');
-//khalti
-    Route::get('khalti', 'KhaltiController@index');
-    Route::post('khalti/checkout', 'KhaltiController@khaltiCheckoutsuccess')->name('khalti.success');
-//razorpay
-    Route::get('/razorpay', 'RazorPayController@razorpay');
-    Route::get('/payment-success', 'RazorPayController@razorpay_success')->name('razorpay.success');
-//mercadopago
-    // mercadopago?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('mercadopago', 'MercadopagoController@mercadepago');
-    Route::get('mercadopago/payment/success', 'MercadopagoController@mercadopagoCheckout')->name('mercadopago.success');
-
-
-//ccavenue   Not completed
-    // ccavenue?amount=100&payment_for=wallet&currency=USD&user_id=2&payment_for=wallet&request_id
-    Route::get('ccavenue', 'CcavenueController@index');
-    Route::post('ccavenue/checkout', 'CcavenueController@ccavenueCheckout')->name('ccavenue.checkout');
-    Route::get('ccavenue/payment/success', 'CcavenueController@success')->name('ccavenue.payment.response');
-    Route::get('ccavenue/payment/failure', 'CcavenueController@failure')->name('ccavenue.payment.cancel');
-
-//cashfree   
-    
-    Route::get('cashfree', 'CashfreeController@create')->name('callback');
-    Route::post('cashfree/payments/store', 'CashfreeController@store')->name('store');
-    Route::any('cashfree/payments/success', 'CashfreeController@success')->name('cashfree.success');
-
-    Route::view("success",'success');
-    Route::view("failure",'failure');
-    Route::view("pending",'pending');
-
-
-//thawani pay
-
-        Route::get('thawani-pay', 'ThawaniPayController@checkout')->name('checkout');
-        Route::get('thawani-pay-success', 'ThawaniPayController@success')->name('thawani-pay-success');
-        Route::get('thawani-pay-cancel', 'ThawaniPayController@cancel')->name('thawani-pay-cancel');
-
-
-
-
-    // Website home route
-    //Route::get('/', 'HomeController@index')->name('home');
-});
-Route::namespace('Web')->group(function () {
-    Route::namespace('Admin')->group(function () {
-        Route::get('html/{request_detail}','RequestController@EmailCustomerIvoiceDirect');
-        Route::post('api/html', 'RequestController@generatePDF');
-        Route::get('api/html/{id}', 'RequestController@EmailCustomerIvoiceDirect1');
-
-
-        Route::post('/save-pdf', 'RequestController@savePdf');
-        Route::post('/send-email', 'RequestController@sendEmail');
-    });
-
+// Artist routes
+Route::get('/artist/{stageName}', [ArtistController::class, 'profile'])->name('artist.profile');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/artist/dashboard', [ArtistController::class, 'dashboard'])->name('artist.dashboard');
+    Route::post('/artist/post', [ArtistController::class, 'createPost'])->name('artist.post');
+    Route::post('/like', [ArtistController::class, 'like'])->name('like.toggle');
+    Route::post('/comment', [ArtistController::class, 'comment'])->name('comment.store');
 });
 
+// Upload routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/upload', [UploadController::class, 'create'])->name('upload.create');
+    Route::post('/upload', [UploadController::class, 'store'])->name('upload.store');
+    Route::post('/upload/cloudinary', [UploadController::class, 'uploadToCloudinary'])->name('upload.cloudinary');
+});
 
+// Wallet routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::post('/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
+    Route::post('/wallet/deposit/callback', [WalletController::class, 'depositCallback'])->name('wallet.deposit.callback');
+});
 
+// Payment routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/payment/upload-fee', [PaymentController::class, 'uploadFee'])->name('payment.upload-fee');
+    Route::post('/payment/initialize', [PaymentController::class, 'initializeFlutterwave'])->name('payment.initialize');
+    Route::get('/payment/callback', [PaymentController::class, 'flutterwaveCallback'])->name('payment.callback');
+});
+Route::get('/payment/verify/{txRef}', [PaymentController::class, 'verifyTransaction'])->name('payment.verify');
 
-
-
+// Admin routes
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::post('/artist/verify/{id}', [AdminController::class, 'verifyArtist'])->name('artist.verify');
+});
